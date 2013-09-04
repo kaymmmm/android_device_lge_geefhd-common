@@ -46,15 +46,11 @@ PRODUCT_PACKAGES += Torch
 PRODUCT_COPY_FILES += \
         device/lge/geefhd-common/ramdisk/init.geefhd.rc:root/init.geefhd.rc \
         device/lge/geefhd-common/ramdisk/init.geefhd.usb.rc:root/init.geefhd.usb.rc \
-        device/lge/geefhd-common/ramdisk/init.qcom.sh:root/init.qcom.sh \
-        device/lge/geefhd-common/ramdisk/fstab.geefhd:root/fstab.geefhd
+        device/lge/geefhd-common/ramdisk/init.qcom.sh:root/init.qcom.sh
 
-# Camera BINs
+# Recovery ramdisk
 PRODUCT_COPY_FILES += \
-        device/lge/geefhd-common/camera/CE170F00.bin:root/sbin/CE170F00.bin \
-        device/lge/geefhd-common/camera/CE170F01.bin:root/sbin/CE170F01.bin \
-        device/lge/geefhd-common/camera/CE170F02.bin:root/sbin/CE170F02.bin \
-        device/lge/geefhd-common/camera/CE170F03.bin:root/sbin/CE170F03.bin
+        device/lge/geefhd-common/ramdisk/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
 
 # WiFi
 PRODUCT_COPY_FILES += \
@@ -82,6 +78,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/lge/geefhd-common/configs/media_profiles.xml:system/etc/media_profiles.xml \
 	device/lge/geefhd-common/configs/media_codecs.xml:system/etc/media_codecs.xml 
+
+# Mixer paths
+PRODUCT_COPY_FILES += \
+	device/lge/geefhd-common/configs/mixer_paths.xml:system/etc/mixer_paths.xml
 
 # Non-Ramdisk Init Scripts
 PRODUCT_COPY_FILES += \
@@ -157,16 +157,19 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/fetch-swv:system/bin/fetch-swv
 
 PRODUCT_PROPERTY_OVERRIDES += \
-	ro.opengles.version=131072
+	ro.opengles.version=196608
 
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.sf.lcd_density=480
 
 # Audio Configuration
 PRODUCT_PROPERTY_OVERRIDES += \
+    persist.audio.handset.mic.type=digital \
+    persist.audio.dualmic.config=endfire \
+    persist.audio.fluence.voicecall=true \
 	persist.audio.handset.mic=digital \
 	persist.audio.fluence.mode=endfire \
-        persist.audio.lowlatency.rec=false \
+    persist.audio.lowlatency.rec=false \
 	af.resampler.quality=4
 
 # Do not power down SIM card when modem is sent to Low Power Mode.
@@ -214,7 +217,6 @@ PRODUCT_PACKAGES += \
 	copybit.msm8960
 
 PRODUCT_PACKAGES += \
-	alsa.msm8960 \
 	audio_policy.msm8960 \
 	audio.primary.msm8960 \
 	audio.a2dp.default \
@@ -225,11 +227,8 @@ PRODUCT_PACKAGES += \
 #PRODUCT_PACKAGES += \
 #	power.msm8960
 
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.qualcomm.bt.hci_transport=smd
-
 PRODUCT_PACKAGES += \
-        libmm-omxcore \
+    libmm-omxcore \
 	libdivxdrmdecrypt \
 	libOmxVdec \
 	libOmxVenc \
@@ -249,6 +248,9 @@ PRODUCT_PACKAGES += \
 	libwfcu \
 	conn_init \
 	wifimac
+
+#PRODUCT_PACKAGES += \
+#	keystore.msm8960
 
 PRODUCT_PROPERTY_OVERRIDES += \
 	drm.service.enabled=true
@@ -276,3 +278,4 @@ WIFI_BAND := 802_11_ABG
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4330/device-bcm.mk)
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+$(call inherit-product, hardware/qcom/msm8960/msm8960.mk)
