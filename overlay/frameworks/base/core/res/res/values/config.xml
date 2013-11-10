@@ -273,4 +273,7 @@
          config to 7. -->
     <integer name="config_deviceHardwareKeys">7</integer>
 
+	<bool name="config_deviceHasVariableButtonBrightness">true</bool>
+
+    <bool name="config_lidControlsSleep">true</bool>
 </resources>
